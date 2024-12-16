@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Registration Page</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      #resultMessage {
+        margin-top: 20px;
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        color: #333;
+      }
+      .user-input {
+        background-color: #f4f4f9;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #555;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .user-input p {
+        margin: 5px 0;
+        font-size: 18px;
+      }
+      .user-input h3 {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row col-md-6 col-md-offset-3">
+        <div class="panel panel-primary">
+          <div class="panel-heading text-center">
+            <h1>Registration Form</h1>
+          </div>
+          <div class="panel-body">
+            <form id="registrationForm" method="post">
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" />
+              </div>
+              <div class="form-group">
+                <label for="gender">Gender</label>
+                <div>
+                  <label for="male" class="radio-inline">
+                    <input type="radio" name="gender" value="m" id="male" />Male
+                  </label>
+                  <label for="female" class="radio-inline">
+                    <input type="radio" name="gender" value="f" id="female" />Female
+                  </label>
+                  <label for="others" class="radio-inline">
+                    <input type="radio" name="gender" value="o" id="others" />Others
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="email" />
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" />
+              </div>
+              <div class="form-group">
+                <label for="number">Phone Number</label>
+                <input type="number" class="form-control" id="number" name="number" />
+              </div>
+              <input type="submit" class="btn btn-primary" value="Register" />
+            </form>
+          </div>
+          <div id="resultMessage"></div>
+          <div class="panel-footer text-right"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        // Fade in the form when the page loads
+        $("#registrationForm").hide().fadeIn(1500);
+
+        // Focus effect for input fields (subtle scaling effect)
+        $("input").focus(function () {
+          $(this).animate({
+            backgroundColor: "#f0f8ff",
+            fontSize: "18px"
+          }, 200);
+        });
+
+        // Blur effect for input fields (reset to normal)
+        $("input").blur(function () {
+          $(this).animate({
+            backgroundColor: "",
+            fontSize: "16px"
+          }, 200);
+        });
+
+        // Handle form submission with AJAX
+        $("#registrationForm").submit(function (event) {
+          event.preventDefault(); // Prevent form submission
+
+          // Get form data
+          var formData = $(this).serialize();
+
+          // AJAX request
+          $.ajax({
+            type: "POST",
+            url: "connect.php",
+            data: formData,
+            success: function (response) {
+              // Get user input values
+              var firstName = $('#firstName').val();
+              var lastName = $('#lastName').val();
+              var gender = $('input[name="gender"]:checked').val();
+              var email = $('#email').val();
+              var number = $('#number').val();
+
+              // Build HTML content with user data
+              var resultHTML = "<div class='user-input'>";
+              resultHTML += "<h3>Registration Successful!</h3>";
+              resultHTML += "<p><strong>First Name:</strong> " + firstName + "</p>";
+              resultHTML += "<p><strong>Last Name:</strong> " + lastName + "</p>";
+              resultHTML += "<p><strong>Gender:</strong> " + (gender === 'm' ? "Male" : gender === 'f' ? "Female" : "Others") + "</p>";
+              resultHTML += "<p><strong>Email:</strong> " + email + "</p>";
+              resultHTML += "<p><strong>Phone Number:</strong> " + number + "</p>";
+              resultHTML += "</div>";
+
+              // Display result in #resultMessage with fade-in and fade-out effect
+              $("#resultMessage")
+                .hide()
+                .html(resultHTML) // Displaying form data directly in HTML
+                .fadeIn(1000)  // Fade-in the message
+                .delay(3000)  // Wait for 3 seconds
+                .fadeOut(1000); // Fade-out after showing the message
+              
+              // Reset the form
+              $("#registrationForm")[0].reset();
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
